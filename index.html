@@ -198,7 +198,31 @@ const DEVELOPERS = ["Emaar", "Al Ahly Sabbour", "ORA", "TMG", "Coldwell", "Nawy"
 const PHONE = "201508500099";
 const WA_BASE = "https://wa.me/" + PHONE;
 
-let state = { role: "tenant", lang: "en", name: "", msg: "" };
+// The hero photo swaps for real between day and night; every other "light" section
+// (role picker, locations, developer strip, contact) swaps its whole palette via these
+// tokens instead of a second photo, same idea as the CRM app's own day/night mode.
+const HERO_PHOTO = { day: "photos/house-tropical.jpg", night: "photos/pyramids-night.jpg" };
+const THEME = {
+  day: {
+    bg: "#FBF7F1", ink: "#08304A", inkSoft: "rgba(8,48,74,.75)", inkFaint: "rgba(8,48,74,.66)",
+    cardBg: "#FFFFFF", cardBorder: "rgba(8,48,74,.14)", sectionBorder: "rgba(8,48,74,.1)",
+    kicker: "#A8531B", inputBg: "#FBF7F1", shadow: "rgba(8,48,74,.07)",
+    chipOffBg: "#FBF7F1", chipOffBorder: "rgba(8,48,74,.14)", chipOffInk: "rgba(8,48,74,.7)",
+    heroOverlay: "radial-gradient(1000px 640px at 78% -10%,rgba(232,152,104,.30) 0%,rgba(232,152,104,0) 60%),linear-gradient(170deg,rgba(11,61,92,.32) 0%,rgba(8,48,74,.5) 45%,rgba(5,33,49,.68) 100%)",
+    heroPhotoOpacity: ".64", toggleIcon: "🌙"
+  },
+  night: {
+    bg: "#04101B", ink: "#EDF3F6", inkSoft: "rgba(237,243,246,.75)", inkFaint: "rgba(237,243,246,.62)",
+    cardBg: "rgba(255,255,255,.055)", cardBorder: "rgba(255,255,255,.14)", sectionBorder: "rgba(255,255,255,.12)",
+    kicker: "#F0B48A", inputBg: "rgba(255,255,255,.06)", shadow: "rgba(0,0,0,.4)",
+    chipOffBg: "rgba(255,255,255,.06)", chipOffBorder: "rgba(255,255,255,.22)", chipOffInk: "rgba(237,243,246,.78)",
+    heroOverlay: "radial-gradient(900px 620px at 78% -12%,rgba(21,89,127,.5) 0%,rgba(21,89,127,0) 62%),linear-gradient(168deg,rgba(11,61,92,.82) 0%,rgba(8,48,74,.88) 46%,rgba(5,33,49,.95) 100%)",
+    heroPhotoOpacity: ".5", toggleIcon: "☀️"
+  }
+};
+let C = THEME.day;
+
+let state = { role: "tenant", lang: "en", name: "", msg: "", theme: "day" };
 
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
@@ -225,16 +249,17 @@ function roleChip(k, on, dense){
   const ar = state.lang === "ar";
   const r = ROLES[k][ar ? "ar" : "en"];
   if (dense) {
-    return `<div class="lp-chip" data-chip="${k}" style="border:1px solid ${on?"#08304A":"rgba(8,48,74,.14)"};background:${on?"#08304A":"#FBF7F1"};color:${on?"#FFFFFF":"rgba(8,48,74,.7)"};border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer">${esc(r.name)}</div>`;
+    return `<div class="lp-chip" data-chip="${k}" style="border:1px solid ${on?"#08304A":C.chipOffBorder};background:${on?"#08304A":C.chipOffBg};color:${on?"#FFFFFF":C.chipOffInk};border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer">${esc(r.name)}</div>`;
   }
-  return `<div class="lp-role-card" data-role-pick="${k}" style="border:1px solid ${on?"#08304A":"rgba(8,48,74,.14)"};background:${on?"#08304A":"#FFFFFF"};border-radius:16px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:8px">
+  return `<div class="lp-role-card" data-role-pick="${k}" style="border:1px solid ${on?"#08304A":C.cardBorder};background:${on?"#08304A":C.cardBg};border-radius:16px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:8px">
     <div style="font-size:22px;line-height:1">${ROLES[k].icon}</div>
-    <div style="font-family:Poppins,sans-serif;font-size:18px;font-weight:600;color:${on?"#FFFFFF":"#08304A"}">${esc(r.name)}</div>
-    <div style="font-size:13px;font-weight:300;line-height:1.6;color:${on?"rgba(255,255,255,.72)":"rgba(8,48,74,.66)"}">${esc(r.tag)}</div>
+    <div style="font-family:Poppins,sans-serif;font-size:18px;font-weight:600;color:${on?"#FFFFFF":C.ink}">${esc(r.name)}</div>
+    <div style="font-size:13px;font-weight:300;line-height:1.6;color:${on?"rgba(255,255,255,.72)":C.inkFaint}">${esc(r.tag)}</div>
   </div>`;
 }
 
 function render(){
+  C = THEME[state.theme];
   const ar = state.lang === "ar";
   const t = ar ? AR : EN;
   const L = ar ? "ar" : "en";
@@ -243,6 +268,7 @@ function render(){
   const font = ar ? "'IBM Plex Sans Arabic', Poppins, sans-serif" : "Poppins, sans-serif";
   const fabSide = ar ? "left" : "right";
   const langLabel = ar ? "English" : "العربية";
+  const night = state.theme === "night";
 
   const rolePicker = Object.keys(ROLES).map(k => roleChip(k, k === state.role, false)).join("");
   const rolePickerChips = Object.keys(ROLES).map(k => roleChip(k, k === state.role, true)).join("");
@@ -251,10 +277,10 @@ function render(){
       <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#E89868">0${i+1}</div>
       <div style="font-size:16px;font-weight:300;line-height:1.72;color:rgba(255,255,255,.86)">${esc(v)}</div>
     </div>`).join("");
-  const locCards = LOCATIONS.map(l => `<div class="lp-card" style="background:#FFFFFF;border:1px solid rgba(8,48,74,.12);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px">
-      <div style="font-family:Poppins,sans-serif;font-size:19px;font-weight:600;color:#08304A">${esc(l[L][0])}</div>
+  const locCards = LOCATIONS.map(l => `<div class="lp-card" style="background:${C.cardBg};border:1px solid ${C.cardBorder};border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:Poppins,sans-serif;font-size:19px;font-weight:600;color:${C.ink}">${esc(l[L][0])}</div>
       <div style="width:34px;height:2px;background:#E89868"></div>
-      <div style="font-size:13.5px;font-weight:300;line-height:1.7;color:rgba(8,48,74,.74)">${esc(l[L][1])}</div>
+      <div style="font-size:13.5px;font-weight:300;line-height:1.7;color:${C.inkSoft}">${esc(l[L][1])}</div>
     </div>`).join("");
   const proofCards = PROOF.map(p => `<div style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
@@ -271,12 +297,12 @@ function render(){
     </div>`).join("");
   const efPoints = t.efPoints.map(v => `<div style="display:flex;gap:13px;align-items:baseline">
       <div style="width:6px;height:6px;border-radius:999px;background:#E89868;flex:none;transform:translateY(-2px)"></div>
-      <div style="font-size:15px;font-weight:300;line-height:1.7;color:rgba(8,48,74,.8)">${esc(v)}</div>
+      <div style="font-size:15px;font-weight:300;line-height:1.7;color:${C.inkSoft}">${esc(v)}</div>
     </div>`).join("");
-  const devChips = DEVELOPERS.map(n => `<div style="border:1px solid rgba(8,48,74,.16);border-radius:999px;padding:10px 22px;font-family:Poppins,sans-serif;font-size:14.5px;font-weight:500;color:rgba(8,48,74,.78);white-space:nowrap">${esc(n)}</div>`).join("");
+  const devChips = DEVELOPERS.map(n => `<div style="border:1px solid ${C.cardBorder};border-radius:999px;padding:10px 22px;font-family:Poppins,sans-serif;font-size:14.5px;font-weight:500;color:${C.ink};white-space:nowrap">${esc(n)}</div>`).join("");
 
   return `
-  <div class="lp" dir="${dir}" style="font-family:${font};color:#08304A;background:#FBF7F1;overflow-x:clip;position:relative">
+  <div class="lp" dir="${dir}" style="font-family:${font};color:${C.ink};background:${C.bg};overflow-x:clip;position:relative">
 
     <div style="position:sticky;top:0;z-index:40;background:rgba(5,33,49,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(232,152,104,.22)">
       <div class="lp-nav" style="max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px">
@@ -288,14 +314,15 @@ function render(){
           </div>
         </div>
         <div style="flex:1"></div>
+        <div class="lp-lang" data-theme-toggle title="${night ? "Switch to day" : "Switch to night"}" style="flex:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;color:rgba(255,255,255,.85);cursor:pointer;white-space:nowrap">${C.toggleIcon}</div>
         <div class="lp-lang" data-lang-toggle style="flex:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);cursor:pointer;white-space:nowrap">${esc(langLabel)}</div>
         <a class="lp-nav-cta" href="${WA_BASE}" target="_blank" rel="noopener" style="flex:none;background:#E89868;border-radius:999px;padding:9px 18px;font-size:13px;font-weight:600;color:#062639;white-space:nowrap">${esc(t.navCta)}</a>
       </div>
     </div>
 
-    <div style="position:relative;overflow:hidden;background:#052131">
-      <img src="photos/house-tropical.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:.46">
-      <div style="position:absolute;inset:0;background:radial-gradient(900px 620px at 78% -12%,rgba(21,89,127,.5) 0%,rgba(21,89,127,0) 62%),linear-gradient(168deg,rgba(11,61,92,.82) 0%,rgba(8,48,74,.88) 46%,rgba(5,33,49,.95) 100%)"></div>
+    <div style="position:relative;overflow:hidden;background:#052131;min-height:100svh;display:flex;flex-direction:column">
+      <img src="${HERO_PHOTO[state.theme]}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:${C.heroPhotoOpacity};transition:opacity .4s ease">
+      <div style="position:absolute;inset:0;background:${C.heroOverlay};transition:background .4s ease"></div>
       <svg viewBox="0 0 1200 760" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" fill="none">
         <defs>
           <linearGradient id="lp-a" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
@@ -312,7 +339,7 @@ function render(){
         <path d="M0 300 L600 900 L1200 300" stroke="url(#lp-a)" stroke-width="2"></path>
         <path d="M0 430 L600 1030 L1200 430" stroke="url(#lp-b)" stroke-width="2"></path>
       </svg>
-      <div class="lp-hero" style="position:relative;max-width:1120px;margin:0 auto;padding:96px 24px 104px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px">
+      <div class="lp-hero" style="position:relative;max-width:1120px;margin:0 auto;padding:64px 24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px">
         <div style="font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#E89868">${esc(t.heroKicker)}</div>
         <div style="font-family:Poppins,sans-serif;font-size:clamp(34px,8cqw,86px);font-weight:700;letter-spacing:-2.4px;line-height:1.02;color:#FFFFFF;max-width:14ch"><span style="color:#E89868">MORE</span> ${esc(t.heroRest)}</div>
         <div style="font-size:clamp(15px,2.1cqw,20px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.78);max-width:58ch">${esc(t.heroSub)}</div>
@@ -328,11 +355,11 @@ function render(){
       </div>
     </div>
 
-    <div style="background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+    <div style="background:${C.bg};border-bottom:1px solid ${C.sectionBorder}">
       <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:64px 24px 72px 24px">
         <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
-          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.spineKicker)}</div>
-          <div style="font-family:Poppins,sans-serif;font-size:clamp(24px,4cqw,40px);font-weight:600;letter-spacing:-1px;line-height:1.2;color:#08304A;max-width:20ch">${esc(t.spineTitle)}</div>
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:${C.kicker}">${esc(t.spineKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(24px,4cqw,40px);font-weight:600;letter-spacing:-1px;line-height:1.2;color:${C.ink};max-width:20ch">${esc(t.spineTitle)}</div>
         </div>
         <div class="lp-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:34px">${rolePicker}</div>
       </div>
@@ -357,11 +384,11 @@ function render(){
       </div>
     </div>
 
-    <div style="background:#FBF7F1">
+    <div style="background:${C.bg}">
       <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:72px 24px 78px 24px">
         <div style="display:flex;flex-direction:column;gap:12px;max-width:26ch">
-          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.locKicker)}</div>
-          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#08304A">${esc(t.locTitle)}</div>
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:${C.kicker}">${esc(t.locKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:${C.ink}">${esc(t.locTitle)}</div>
         </div>
         <div class="lp-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:36px">${locCards}</div>
       </div>
@@ -387,12 +414,12 @@ function render(){
       </div>
     </div>
 
-    <div style="position:relative;overflow:hidden;background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+    <div style="position:relative;overflow:hidden;background:${C.bg};border-bottom:1px solid ${C.sectionBorder}">
       <div class="lp-sec lp-pad-lg" style="position:relative;max-width:1120px;margin:0 auto;padding:72px 24px 78px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:44px;align-items:center">
         <div style="display:flex;flex-direction:column;gap:16px">
-          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.efKicker)}</div>
-          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#08304A">${esc(t.efTitle)}</div>
-          <div style="font-size:16px;font-weight:300;line-height:1.78;color:rgba(8,48,74,.78);max-width:48ch">${esc(t.efBody)}</div>
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:${C.kicker}">${esc(t.efKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:${C.ink}">${esc(t.efTitle)}</div>
+          <div style="font-size:16px;font-weight:300;line-height:1.78;color:${C.inkSoft};max-width:48ch">${esc(t.efBody)}</div>
           <div style="display:flex;flex-direction:column;gap:11px;margin-top:6px">${efPoints}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:18px;align-items:center">
@@ -409,41 +436,41 @@ function render(){
       </div>
     </div>
 
-    <div style="background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+    <div style="background:${C.bg};border-bottom:1px solid ${C.sectionBorder}">
       <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:48px 24px 52px 24px;display:flex;flex-direction:column;gap:22px;align-items:center">
-        <div style="font-size:11.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.devKicker)}</div>
+        <div style="font-size:11.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:${C.inkFaint}">${esc(t.devKicker)}</div>
         <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center">${devChips}</div>
       </div>
     </div>
 
-    <div style="background:#FBF7F1">
+    <div style="background:${C.bg}">
       <div class="lp-sec lp-pad-lg lp-contact" style="max-width:1120px;margin:0 auto;padding:72px 24px 84px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:44px;align-items:start">
         <div style="display:flex;flex-direction:column;gap:16px">
-          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.ctaKicker)}</div>
-          <div style="font-family:Poppins,sans-serif;font-size:clamp(25px,4cqw,42px);font-weight:600;letter-spacing:-1.2px;line-height:1.18;color:#08304A">${esc(t.ctaTitle)}</div>
-          <div style="font-size:16px;font-weight:300;line-height:1.75;color:rgba(8,48,74,.76);max-width:46ch">${esc(t.ctaBody)}</div>
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:${C.kicker}">${esc(t.ctaKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(25px,4cqw,42px);font-weight:600;letter-spacing:-1.2px;line-height:1.18;color:${C.ink}">${esc(t.ctaTitle)}</div>
+          <div style="font-size:16px;font-weight:300;line-height:1.75;color:${C.inkSoft};max-width:46ch">${esc(t.ctaBody)}</div>
           <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;color:#08304A">0150 850 0099</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;color:rgba(8,48,74,.72)">@more_thanrealestate</div>
-            <div style="font-size:15px;font-weight:300;color:rgba(8,48,74,.72)">${esc(t.address)}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;color:${C.ink}">0150 850 0099</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;color:${C.inkFaint}">@more_thanrealestate</div>
+            <div style="font-size:15px;font-weight:300;color:${C.inkFaint}">${esc(t.address)}</div>
           </div>
         </div>
-        <div style="background:#FFFFFF;border:1px solid rgba(8,48,74,.14);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 30px rgba(8,48,74,.07)">
-          <div style="font-family:Poppins,sans-serif;font-size:17px;font-weight:600;color:#08304A">${esc(t.formTitle)}</div>
+        <div style="background:${C.cardBg};border:1px solid ${C.cardBorder};border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 30px ${C.shadow}">
+          <div style="font-family:Poppins,sans-serif;font-size:17px;font-weight:600;color:${C.ink}">${esc(t.formTitle)}</div>
           <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fName)}</div>
-            <input id="fldName" type="text" value="${esc(state.name)}" placeholder="${esc(t.pName)}" style="border:1px solid rgba(8,48,74,.18);border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:#08304A;background:#FBF7F1;outline:none;width:100%">
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:${C.inkFaint}">${esc(t.fName)}</div>
+            <input id="fldName" type="text" value="${esc(state.name)}" placeholder="${esc(t.pName)}" style="border:1px solid ${C.cardBorder};border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:${C.ink};background:${C.inputBg};outline:none;width:100%">
           </div>
           <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fRole)}</div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:${C.inkFaint}">${esc(t.fRole)}</div>
             <div style="display:flex;gap:7px;flex-wrap:wrap">${rolePickerChips}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fMsg)}</div>
-            <textarea id="fldMsg" rows="3" placeholder="${esc(a.placeholder)}" style="border:1px solid rgba(8,48,74,.18);border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:#08304A;background:#FBF7F1;outline:none;width:100%;resize:vertical">${esc(state.msg)}</textarea>
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:${C.inkFaint}">${esc(t.fMsg)}</div>
+            <textarea id="fldMsg" rows="3" placeholder="${esc(a.placeholder)}" style="border:1px solid ${C.cardBorder};border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:${C.ink};background:${C.inputBg};outline:none;width:100%;resize:vertical">${esc(state.msg)}</textarea>
           </div>
           <a id="waBtn" href="${buildWaLink()}" target="_blank" rel="noopener" style="background:#08304A;border-radius:12px;padding:15px;text-align:center;font-size:15px;font-weight:600;color:#FFFFFF;display:block">${esc(t.formCta)}</a>
-          <div style="font-size:12px;font-weight:300;line-height:1.6;color:rgba(8,48,74,.72);text-align:center">${esc(t.formNote)}</div>
+          <div style="font-size:12px;font-weight:300;line-height:1.6;color:${C.inkFaint};text-align:center">${esc(t.formNote)}</div>
         </div>
       </div>
     </div>
@@ -500,6 +527,8 @@ function wire(){
   });
   const lang = app.querySelector("[data-lang-toggle]");
   if (lang) lang.addEventListener("click", () => { state.lang = state.lang === "ar" ? "en" : "ar"; mount(); });
+  const themeBtn = app.querySelector("[data-theme-toggle]");
+  if (themeBtn) themeBtn.addEventListener("click", () => { state.theme = state.theme === "night" ? "day" : "night"; mount(); });
   const nameEl = document.getElementById("fldName");
   const msgEl = document.getElementById("fldMsg");
   const waBtn = document.getElementById("waBtn");
@@ -509,6 +538,8 @@ function wire(){
 
 function mount(){
   document.getElementById("app").innerHTML = render();
+  document.body.style.background = C.bg;
+  document.body.style.transition = "background .4s ease";
   wire();
 }
 mount();
