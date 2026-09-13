@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MORE — More than real estate</title>
+<meta name="description" content="MORE finds, hands over and manages homes for people arriving in Cairo — and looks after the owners who supply them.">
+<link rel="icon" href="more-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F1}
+a{color:#A8531B;text-decoration:none}
+a:hover{color:#08304A}
+*{box-sizing:border-box}
+img{max-width:100%;display:block}
+.lp{container-type:inline-size;container-name:lp}
+@container lp (max-width:720px){
+  .lp-nav{padding:11px 16px !important;gap:10px !important}
+  .lp-nav-cta{padding:0 17px !important;font-size:13px !important;min-height:44px !important;display:flex !important;align-items:center !important}
+  .lp-lang{padding:0 15px !important;font-size:12.5px !important;min-height:44px !important;display:flex !important;align-items:center !important}
+  .lp-hero{padding:62px 18px 70px 18px !important;gap:20px !important}
+  .lp-sec{padding-left:18px !important;padding-right:18px !important}
+  .lp-pad-lg{padding-top:52px !important;padding-bottom:58px !important}
+  .lp-grid{gap:10px !important}
+  .lp-steps{gap:22px !important;margin-top:32px !important}
+  .lp-contact{gap:30px !important}
+  .lp-card{padding:18px 18px !important}
+  .lp-foot-row{gap:18px !important}
+  .lp-chip{min-height:44px !important;padding:0 17px !important;display:flex !important;align-items:center !important}
+  .lp-fab{padding:13px 16px !important;font-size:0 !important;gap:0 !important;bottom:16px !important}
+  .lp-fab svg{width:22px !important;height:22px !important}
+}
+@container lp (max-width:420px){
+  .lp-nav{padding:10px 13px !important;gap:7px !important}
+  .lp-nav-cta{padding:0 14px !important;font-size:12.5px !important}
+  .lp-lang{padding:0 12px !important}
+  .lp-hero-btn{width:100% !important;text-align:center !important}
+  .lp-since{flex-direction:column !important;gap:7px !important}
+  .lp-since-dot{display:none !important}
+}
+.lp-role-card{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.lp-role-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(8,48,74,.12)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// Copy lifted verbatim from the approved design (MORE-Landing-v4.dc.html) — do not reword,
+// see LANDING-brief.md "Copy that must not be reworded".
+const EN = {
+  navCta: "WhatsApp", heroKicker: "MORE · Cairo",
+  heroRest: "than real estate",
+  heroSub: "We find, hand over and manage homes for people arriving in Cairo — and look after the owners who supply them.",
+  heroCta: "Talk to us", heroCta2: "See what we've handed over",
+  since1: "In real estate since 2020", since2: "In Cairo since 2023",
+  spineKicker: "Start here", spineTitle: "What matters depends on who you are",
+  forYou: "For you",
+  locKicker: "Where we work", locTitle: "MORE knows Cairo",
+  proofKicker: "Proof, not listings", proofTitle: "Here is what we have actually handed over and managed",
+  proofFoot: "Ask for the full list — we will send it the same day.",
+  bandLine: "Cairo is a city where the same flat has three prices. We give you one.",
+  efKicker: "Our partner",
+  efTitle: "MORE × El Fayez",
+  efBody: "El Fayez for Real Estate Investment is our partner in Cairo. They bring developer relationships and an investment book; we bring the clients, the advisory and the day-to-day management.",
+  efPoints: ["Access to units and allocations a single office would not reach on its own.",
+             "A second opinion on every valuation before a number reaches you.",
+             "Two companies accountable for the same deal, not one taking a fee and vanishing."],
+  efCaption: "Signed partnership, shared pipeline. You deal with MORE throughout.",
+  devKicker: "Developers and portals we work with",
+  ctaKicker: "Get in touch", ctaTitle: "Tell us what you need",
+  ctaBody: "Three fields, then it opens WhatsApp with the message already written. No forms that vanish into an inbox.",
+  formTitle: "Send us a message", fName: "Your name", pName: "e.g. Hala Farouk",
+  fRole: "You are a", fMsg: "What do you need?",
+  formCta: "Send on WhatsApp",
+  formNote: "Opens WhatsApp. Nothing is stored on this page.",
+  address: "36 Tarablous, Nasr City, Cairo",
+  taxLabel: "Tax reg.", partner: "In partnership with", fab: "WhatsApp"
+};
+const AR = {
+  navCta: "واتساب", heroKicker: "MORE · القاهرة",
+  heroRest: "أكثر من مجرد عقارات",
+  heroSub: "نجد ونسلّم وندير المنازل لمن يصل إلى القاهرة — ونعتني بالمُلّاك الذين يوفّرونها.",
+  heroCta: "تواصل معنا", heroCta2: "شاهد ما سلّمناه",
+  since1: "في العقارات منذ 2020", since2: "في القاهرة منذ 2023",
+  spineKicker: "ابدأ من هنا", spineTitle: "ما يهمّك يعتمد على من تكون",
+  forYou: "لك أنت",
+  locKicker: "أين نعمل", locTitle: "MORE تعرف القاهرة",
+  proofKicker: "دليل، لا قوائم", proofTitle: "هذا ما سلّمناه وأدرناه فعلاً",
+  proofFoot: "اطلب القائمة الكاملة — نرسلها في نفس اليوم.",
+  bandLine: "القاهرة مدينة تجد فيها للشقة الواحدة ثلاثة أسعار. نحن نعطيك سعراً واحداً.",
+  efKicker: "شريكنا",
+  efTitle: "MORE × الفايز",
+  efBody: "الفايز للاستثمار العقاري شريكنا في القاهرة. هم يجلبون العلاقات مع المطوّرين ومحفظة استثمارية، ونحن نجلب العملاء والاستشارة والإدارة اليومية.",
+  efPoints: ["وصول إلى وحدات وحصص لا يبلغها مكتب واحد بمفرده.",
+             "رأي ثانٍ في كل تقييم قبل أن يصلك أي رقم.",
+             "شركتان مسؤولتان عن الصفقة نفسها، لا طرف يأخذ عمولته ويختفي."],
+  efCaption: "شراكة موقّعة وخطّ عمل مشترك. تتعامل مع MORE من البداية إلى النهاية.",
+  devKicker: "المطوّرون والمنصّات التي نعمل معها",
+  ctaKicker: "تواصل معنا", ctaTitle: "أخبرنا بما تحتاجه",
+  ctaBody: "ثلاثة حقول، ثم يفتح واتساب والرسالة مكتوبة. لا نماذج تختفي في بريد إلكتروني.",
+  formTitle: "أرسل لنا رسالة", fName: "اسمك", pName: "مثال: هالة فاروق",
+  fRole: "أنت", fMsg: "ماذا تحتاج؟",
+  formCta: "أرسل عبر واتساب",
+  formNote: "يفتح واتساب. لا يُحفظ شيء على هذه الصفحة.",
+  address: "36 طرابلس، مدينة نصر، القاهرة",
+  taxLabel: "السجل الضريبي", partner: "بالشراكة مع", fab: "واتساب"
+};
+// Only photos/living-room.jpg was actually handed off (see README under handoff 2/landing) —
+// every role uses it as the role-band's faint background rather than the four separate
+// per-role photos the original design called for. Swap in the other three if they're ever
+// supplied.
+const ROLES = {
+  tenant: { icon: "🔑", photo: "photos/living-room.jpg",
+    en: { name: "Tenant", tag: "You need somewhere to live.",
+      head: "You need a home that matches its photographs.",
+      steps: ["Tell us the area, the budget and the date you need the keys.",
+              "We only send you units we have stood inside ourselves.",
+              "Contract in plain language, deposit agreed in writing before you sign."],
+      foot: "Two weeks, no local number, no idea what things cost. We close that gap — it's most of the work.",
+      cta: "Tell us what you're looking for", placeholder: "Area, budget, when you need to move in" },
+    ar: { name: "مستأجر", tag: "تبحث عن مكان للسكن.",
+      head: "تحتاج منزلاً يطابق صوره.",
+      steps: ["أخبرنا بالمنطقة والميزانية وموعد استلام المفاتيح.",
+              "لا نرسل لك إلا وحدات وقفنا بداخلها بأنفسنا.",
+              "عقد بلغة واضحة، والتأمين متّفق عليه كتابةً قبل التوقيع."],
+      foot: "أسبوعان، بلا رقم محلي، وبلا فكرة عن الأسعار. نحن نسدّ هذه الفجوة — وهي معظم العمل.",
+      cta: "أخبرنا بما تبحث عنه", placeholder: "المنطقة، الميزانية، موعد الانتقال" } },
+  landlord: { icon: "🏠", photo: "photos/living-room.jpg",
+    en: { name: "Landlord", tag: "You own a unit to rent out.",
+      head: "You need rent on time and one person who answers.",
+      steps: ["We price the unit against what actually rented nearby, not what was asked.",
+              "We photograph it, list it, and screen everyone who views it.",
+              "Rent collected, a statement every month, repairs handled without calling you."],
+      foot: "We manage units in TMG and Nasr City today. Ask to see the owner statement we send — it reconciles to the pound.",
+      cta: "Ask about managing your unit", placeholder: "Where is the unit, and is it furnished?" },
+    ar: { name: "مالك", tag: "لديك وحدة للإيجار.",
+      head: "تحتاج إيجاراً في موعده وشخصاً واحداً يردّ.",
+      steps: ["نسعّر الوحدة بما أُجّر فعلاً في المنطقة، لا بما طُلب.",
+              "نصوّرها ونعرضها ونفحص كل من يأتي لمعاينتها.",
+              "تحصيل الإيجار، وكشف حساب كل شهر، وإصلاحات تُنجَز دون إزعاجك."],
+      foot: "ندير اليوم وحدات في TMG ومدينة نصر. اطلب كشف المالك الذي نرسله — يُطابق حتى الجنيه.",
+      cta: "اسأل عن إدارة وحدتك", placeholder: "أين الوحدة، وهل هي مفروشة؟" } },
+  buyer: { icon: "📐", photo: "photos/living-room.jpg",
+    en: { name: "Buyer", tag: "You are buying to live or to hold.",
+      head: "You need the real price per metre.",
+      steps: ["We ask what you want the unit to do — live in it, hold it, or resell it.",
+              "You get options across developers, not one developer's price list.",
+              "The payment plan is checked to year four, not just the down payment."],
+      foot: "We are a TMG ambassador. Most brokers steer clients away from Madinaty and Al Rehab, because TMG pays them nothing — we show you them anyway. With Emaar, Sabbour and ORA we are paid the same whichever you pick. Either way the incentive is yours, not ours.",
+      cta: "Ask for options", placeholder: "Budget, area, and whether it's to live in or hold" },
+    ar: { name: "مشترٍ", tag: "تشتري للسكن أو للاستثمار.",
+      head: "تحتاج السعر الحقيقي للمتر.",
+      steps: ["نسألك ما الذي تريده من الوحدة — سكن، أم احتفاظ، أم إعادة بيع.",
+              "تحصل على خيارات من عدة مطوّرين، لا قائمة أسعار مطوّر واحد.",
+              "نراجع خطة السداد حتى السنة الرابعة، لا المقدَّم فقط."],
+      foot: "نحن سفير معتمد لـ TMG. معظم الوسطاء يبعدون العملاء عن مدينتي والرحاب لأن TMG لا تدفع لهم عمولة — ونحن نعرضها عليك رغم ذلك. ومع إعمار وصبور وأورا نتقاضى الشيء نفسه أياً كان اختيارك. في الحالتين، المصلحة مصلحتك لا مصلحتنا.",
+      cta: "اطلب الخيارات", placeholder: "الميزانية والمنطقة، وهل هي للسكن أم للاستثمار" } },
+  seller: { icon: "🪧", photo: "photos/living-room.jpg",
+    en: { name: "Seller", tag: "You have a unit to sell.",
+      head: "You need the honest number, then a buyer who completes.",
+      steps: ["A valuation with the comparables written down, so you can check our working.",
+              "Listed where buyers for your unit actually look, not everywhere at once.",
+              "We handle viewings, offers and paperwork through to transfer."],
+      foot: "If the flattering number is what you want, another office will give it to you. It will still sell at the real one, six months later.",
+      cta: "Ask what it's worth", placeholder: "Where is the unit, and when do you need to sell?" },
+    ar: { name: "بائع", tag: "لديك وحدة للبيع.",
+      head: "تحتاج الرقم الصادق، ثم مشترياً يُتمّ الصفقة.",
+      steps: ["تقييم بمقارنات مكتوبة، حتى تتمكّن من مراجعة حساباتنا.",
+              "يُعرض حيث يبحث مشترو وحدتك فعلاً، لا في كل مكان دفعة واحدة.",
+              "نتولّى المعاينات والعروض والأوراق حتى التسجيل."],
+      foot: "إن كان الرقم المُرضي هو ما تريده، فمكتب آخر سيمنحك إياه. وستبيع بالرقم الحقيقي بعد ستة أشهر على أي حال.",
+      cta: "اسأل عن قيمتها", placeholder: "أين الوحدة، ومتى تحتاج البيع؟" } }
+};
+const LOCATIONS = [
+  { en: ["New Cairo", "Compounds, resale and primary. Where most of our buyers land."],
+    ar: ["القاهرة الجديدة", "كمبوندات، إعادة بيع وبرايمري. حيث يستقرّ أغلب مشترينا."] },
+  { en: ["TMG", "Madinaty and Al Rehab. Where we hand over and manage."],
+    ar: ["TMG", "مدينتي والرحاب. حيث نسلّم وندير."] },
+  { en: ["Nasr City", "Our own street. Apartments, long lets, owners we know by name."],
+    ar: ["مدينة نصر", "شارعنا. شقق وإيجارات طويلة ومُلّاك نعرفهم بالاسم."] },
+  { en: ["New Capital", "Primary only, for now. We will say so when that changes."],
+    ar: ["العاصمة الإدارية", "برايمري فقط، حتى الآن. سنقول متى يتغيّر ذلك."] },
+  { en: ["North Coast", "Seasonal, and it moves fast. Ask early."],
+    ar: ["الساحل الشمالي", "موسمي، ويتحرّك بسرعة. اسأل مبكراً."] }
+];
+const PROOF = [
+  { size: "400", unit: "m²", en: ["TMG", "Handed over & managed", "Villa · B10 G104", "4 bedrooms · furnished · guest villa"],
+    ar: ["TMG", "سُلّمت ومُدارة", "فيلا · B10 G104", "٤ غرف · مفروشة · فيلا ضيافة"] },
+  { size: "165", unit: "m²", en: ["Nasr City", "Handed over 2025", "Apartment · Abbas El Akkad", "3 bedrooms · 2 baths · furnished"],
+    ar: ["مدينة نصر", "سُلّمت 2025", "شقة · عباس العقاد", "٣ غرف · حمّامان · مفروشة"] },
+  { size: "12", unit: "units", en: ["New Cairo", "Sourced", "Coldwell · partner desk", "Sourced and shared, 50 / 50 split"],
+    ar: ["القاهرة الجديدة", "مصدر", "كولدويل · مكتب شريك", "مصدرة ومشتركة، بنسبة ٥٠ / ٥٠"] }
+];
+const DEVELOPERS = ["Emaar", "Al Ahly Sabbour", "ORA", "TMG", "Coldwell", "Nawy"];
+
+const PHONE = "201508500099";
+const WA_BASE = "https://wa.me/" + PHONE;
+
+let state = { role: "tenant", lang: "en", name: "", msg: "" };
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function buildWaLink(){
+  const ar = state.lang === "ar";
+  const a = ROLES[state.role][ar ? "ar" : "en"];
+  const lines = [
+    (ar ? "مرحباً MORE، أنا " : "Hello MORE, I'm ") + (state.name || "—"),
+    (ar ? "أنا: " : "I'm a: ") + a.name,
+    state.msg || a.placeholder
+  ];
+  return WA_BASE + "?text=" + encodeURIComponent(lines.join("\n"));
+}
+
+function roleChip(k, on, dense){
+  const ar = state.lang === "ar";
+  const r = ROLES[k][ar ? "ar" : "en"];
+  if (dense) {
+    return `<div class="lp-chip" data-chip="${k}" style="border:1px solid ${on?"#08304A":"rgba(8,48,74,.14)"};background:${on?"#08304A":"#FBF7F1"};color:${on?"#FFFFFF":"rgba(8,48,74,.7)"};border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer">${esc(r.name)}</div>`;
+  }
+  return `<div class="lp-role-card" data-role-pick="${k}" style="border:1px solid ${on?"#08304A":"rgba(8,48,74,.14)"};background:${on?"#08304A":"#FFFFFF"};border-radius:16px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:8px">
+    <div style="font-size:22px;line-height:1">${ROLES[k].icon}</div>
+    <div style="font-family:Poppins,sans-serif;font-size:18px;font-weight:600;color:${on?"#FFFFFF":"#08304A"}">${esc(r.name)}</div>
+    <div style="font-size:13px;font-weight:300;line-height:1.6;color:${on?"rgba(255,255,255,.72)":"rgba(8,48,74,.66)"}">${esc(r.tag)}</div>
+  </div>`;
+}
+
+function render(){
+  const ar = state.lang === "ar";
+  const t = ar ? AR : EN;
+  const L = ar ? "ar" : "en";
+  const a = ROLES[state.role][L];
+  const dir = ar ? "rtl" : "ltr";
+  const font = ar ? "'IBM Plex Sans Arabic', Poppins, sans-serif" : "Poppins, sans-serif";
+  const fabSide = ar ? "left" : "right";
+  const langLabel = ar ? "English" : "العربية";
+
+  const rolePicker = Object.keys(ROLES).map(k => roleChip(k, k === state.role, false)).join("");
+  const rolePickerChips = Object.keys(ROLES).map(k => roleChip(k, k === state.role, true)).join("");
+  const steps = a.steps.map((v, i) => `<div style="display:flex;flex-direction:column;gap:12px;border-top:2px solid rgba(232,152,104,.45);padding-top:18px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#E89868">0${i+1}</div>
+      <div style="font-size:16px;font-weight:300;line-height:1.72;color:rgba(255,255,255,.86)">${esc(v)}</div>
+    </div>`).join("");
+  const locCards = LOCATIONS.map(l => `<div class="lp-card" style="background:#FFFFFF;border:1px solid rgba(8,48,74,.12);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:Poppins,sans-serif;font-size:19px;font-weight:600;color:#08304A">${esc(l[L][0])}</div>
+      <div style="width:34px;height:2px;background:#E89868"></div>
+      <div style="font-size:13.5px;font-weight:300;line-height:1.7;color:rgba(8,48,74,.74)">${esc(l[L][1])}</div>
+    </div>`).join("");
+  const proofCards = PROOF.map(p => `<div style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <div style="font-size:11.5px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:#E89868">${esc(p[L][0])}</div>
+        <div style="font-size:11px;font-weight:500;padding:4px 10px;border-radius:999px;background:rgba(232,152,104,.18);color:#F0B48A;white-space:nowrap">${esc(p[L][1])}</div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:7px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:600;letter-spacing:-1px;color:#FFFFFF;line-height:1">${esc(p.size)}</div>
+        <div style="font-size:14px;font-weight:400;color:rgba(255,255,255,.6)">${esc(p.unit)}</div>
+      </div>
+      <div style="height:1px;background:rgba(255,255,255,.16)"></div>
+      <div style="font-size:14.5px;font-weight:500;color:#FFFFFF">${esc(p[L][2])}</div>
+      <div style="font-size:13px;font-weight:300;line-height:1.65;color:rgba(255,255,255,.66)">${esc(p[L][3])}</div>
+    </div>`).join("");
+  const efPoints = t.efPoints.map(v => `<div style="display:flex;gap:13px;align-items:baseline">
+      <div style="width:6px;height:6px;border-radius:999px;background:#E89868;flex:none;transform:translateY(-2px)"></div>
+      <div style="font-size:15px;font-weight:300;line-height:1.7;color:rgba(8,48,74,.8)">${esc(v)}</div>
+    </div>`).join("");
+  const devChips = DEVELOPERS.map(n => `<div style="border:1px solid rgba(8,48,74,.16);border-radius:999px;padding:10px 22px;font-family:Poppins,sans-serif;font-size:14.5px;font-weight:500;color:rgba(8,48,74,.78);white-space:nowrap">${esc(n)}</div>`).join("");
+
+  return `
+  <div class="lp" dir="${dir}" style="font-family:${font};color:#08304A;background:#FBF7F1;overflow-x:clip;position:relative">
+
+    <div style="position:sticky;top:0;z-index:40;background:rgba(5,33,49,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(232,152,104,.22)">
+      <div class="lp-nav" style="max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px">
+        <div style="display:flex;align-items:center;gap:12px;flex:none">
+          <img src="more-mark.png" alt="MORE" style="width:34px;height:31px;object-fit:contain">
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <div style="font-family:Poppins,sans-serif;font-size:17px;font-weight:700;letter-spacing:-.4px;color:#FFFFFF;line-height:1">MORE</div>
+            <div style="font-family:Poppins,sans-serif;font-size:8.5px;font-weight:500;letter-spacing:2.2px;text-transform:uppercase;color:#E89868;line-height:1">Cairo</div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="lp-lang" data-lang-toggle style="flex:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);cursor:pointer;white-space:nowrap">${esc(langLabel)}</div>
+        <a class="lp-nav-cta" href="${WA_BASE}" target="_blank" rel="noopener" style="flex:none;background:#E89868;border-radius:999px;padding:9px 18px;font-size:13px;font-weight:600;color:#062639;white-space:nowrap">${esc(t.navCta)}</a>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:#052131">
+      <img src="photos/house-tropical.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:.46">
+      <div style="position:absolute;inset:0;background:radial-gradient(900px 620px at 78% -12%,rgba(21,89,127,.5) 0%,rgba(21,89,127,0) 62%),linear-gradient(168deg,rgba(11,61,92,.82) 0%,rgba(8,48,74,.88) 46%,rgba(5,33,49,.95) 100%)"></div>
+      <svg viewBox="0 0 1200 760" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" fill="none">
+        <defs>
+          <linearGradient id="lp-a" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
+            <stop offset="0" stop-color="#E89868" stop-opacity=".1"></stop>
+            <stop offset="0.5" stop-color="#E89868" stop-opacity=".6"></stop>
+            <stop offset="1" stop-color="#E89868" stop-opacity=".1"></stop>
+          </linearGradient>
+          <linearGradient id="lp-b" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
+            <stop offset="0" stop-color="#E89868" stop-opacity=".05"></stop>
+            <stop offset="0.5" stop-color="#E89868" stop-opacity=".26"></stop>
+            <stop offset="1" stop-color="#E89868" stop-opacity=".05"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M0 300 L600 900 L1200 300" stroke="url(#lp-a)" stroke-width="2"></path>
+        <path d="M0 430 L600 1030 L1200 430" stroke="url(#lp-b)" stroke-width="2"></path>
+      </svg>
+      <div class="lp-hero" style="position:relative;max-width:1120px;margin:0 auto;padding:96px 24px 104px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px">
+        <div style="font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#E89868">${esc(t.heroKicker)}</div>
+        <div style="font-family:Poppins,sans-serif;font-size:clamp(34px,8cqw,86px);font-weight:700;letter-spacing:-2.4px;line-height:1.02;color:#FFFFFF;max-width:14ch"><span style="color:#E89868">MORE</span> ${esc(t.heroRest)}</div>
+        <div style="font-size:clamp(15px,2.1cqw,20px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.78);max-width:58ch">${esc(t.heroSub)}</div>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+          <a class="lp-hero-btn" href="${WA_BASE}" target="_blank" rel="noopener" style="background:#E89868;border-radius:999px;padding:15px 32px;font-size:15px;font-weight:600;color:#062639">${esc(t.heroCta)}</a>
+          <a class="lp-hero-btn" href="#proof" style="border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:15px 32px;font-size:15px;font-weight:600;color:#FFFFFF">${esc(t.heroCta2)}</a>
+        </div>
+        <div class="lp-since" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;letter-spacing:.4px;color:rgba(255,255,255,.6)">
+          <div>${esc(t.since1)}</div>
+          <div class="lp-since-dot" style="width:4px;height:4px;border-radius:999px;background:rgba(232,152,104,.7)"></div>
+          <div>${esc(t.since2)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+      <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:64px 24px 72px 24px">
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.spineKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(24px,4cqw,40px);font-weight:600;letter-spacing:-1px;line-height:1.2;color:#08304A;max-width:20ch">${esc(t.spineTitle)}</div>
+        </div>
+        <div class="lp-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:34px">${rolePicker}</div>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:linear-gradient(168deg,#0B3D5C 0%,#08304A 50%,#052131 100%)">
+      <img src="${ROLES[state.role].photo}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.14;pointer-events:none">
+      <svg viewBox="0 0 1200 620" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" fill="none">
+        <path d="M0 200 L600 800 L1200 200" stroke="rgba(232,152,104,.16)" stroke-width="2"></path>
+      </svg>
+      <div class="lp-sec lp-pad-lg" style="position:relative;max-width:1120px;margin:0 auto;padding:76px 24px 84px 24px">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:24ch">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#E89868">${esc(t.forYou)} &mdash; ${esc(a.name)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,40px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#FFFFFF">${esc(a.head)}</div>
+        </div>
+        <div class="lp-steps" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:26px;margin-top:44px">${steps}</div>
+        <div style="margin-top:44px;border-left:3px solid #E89868;padding-left:20px;max-width:64ch">
+          <div style="font-size:15px;font-weight:300;line-height:1.8;color:rgba(255,255,255,.7)">${esc(a.foot)}</div>
+        </div>
+        <a href="${WA_BASE}" target="_blank" rel="noopener" style="display:inline-block;margin-top:36px;background:#E89868;border-radius:999px;padding:14px 30px;font-size:14.5px;font-weight:600;color:#062639">${esc(a.cta)}</a>
+      </div>
+    </div>
+
+    <div style="background:#FBF7F1">
+      <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:72px 24px 78px 24px">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:26ch">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.locKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#08304A">${esc(t.locTitle)}</div>
+        </div>
+        <div class="lp-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:36px">${locCards}</div>
+      </div>
+    </div>
+
+    <div id="proof" style="position:relative;overflow:hidden;background:linear-gradient(168deg,#0B3D5C 0%,#08304A 52%,#052131 100%)">
+      <img src="photos/living-room.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.1;pointer-events:none">
+      <div class="lp-sec lp-pad-lg" style="position:relative;max-width:1120px;margin:0 auto;padding:74px 24px 80px 24px">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:30ch">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#E89868">${esc(t.proofKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#FFFFFF">${esc(t.proofTitle)}</div>
+        </div>
+        <div class="lp-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:38px">${proofCards}</div>
+        <div style="margin-top:34px;font-size:14px;font-weight:300;color:rgba(255,255,255,.6)">${esc(t.proofFoot)}</div>
+      </div>
+    </div>
+
+    <div style="position:relative;height:clamp(200px,26cqw,320px);overflow:hidden">
+      <img src="photos/cairo-panorama.jpg" alt="Cairo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,33,49,.34),rgba(5,33,49,.62))"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 22px">
+        <div style="font-family:Poppins,sans-serif;font-size:clamp(20px,3cqw,32px);font-weight:500;letter-spacing:-.4px;line-height:1.4;color:#FFFFFF;text-align:center;max-width:30ch">${esc(t.bandLine)}</div>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+      <div class="lp-sec lp-pad-lg" style="position:relative;max-width:1120px;margin:0 auto;padding:72px 24px 78px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:44px;align-items:center">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.efKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,38px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#08304A">${esc(t.efTitle)}</div>
+          <div style="font-size:16px;font-weight:300;line-height:1.78;color:rgba(8,48,74,.78);max-width:48ch">${esc(t.efBody)}</div>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-top:6px">${efPoints}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;align-items:center">
+          <div style="position:relative;overflow:hidden;border-radius:20px;width:100%;background:linear-gradient(168deg,#0B3D5C,#08304A 54%,#052131);padding:36px 28px;display:flex;flex-direction:column;align-items:center;gap:22px">
+            <div style="position:relative;display:flex;align-items:center;gap:20px">
+              <img src="more-mark.png" alt="MORE" style="width:52px;height:47px;object-fit:contain">
+              <div style="font-family:Poppins,sans-serif;font-size:26px;font-weight:300;color:rgba(255,255,255,.5);line-height:1">&times;</div>
+              <img src="elfayez-gold.png" alt="El Fayez" style="height:52px;width:79px;object-fit:contain">
+            </div>
+            <div style="position:relative;height:1px;width:70%;background:rgba(255,255,255,.2)"></div>
+            <div style="position:relative;font-size:14px;font-weight:300;line-height:1.7;color:rgba(255,255,255,.8);text-align:center;max-width:32ch">${esc(t.efCaption)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#FBF7F1;border-bottom:1px solid rgba(8,48,74,.1)">
+      <div class="lp-sec lp-pad-lg" style="max-width:1120px;margin:0 auto;padding:48px 24px 52px 24px;display:flex;flex-direction:column;gap:22px;align-items:center">
+        <div style="font-size:11.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.devKicker)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center">${devChips}</div>
+      </div>
+    </div>
+
+    <div style="background:#FBF7F1">
+      <div class="lp-sec lp-pad-lg lp-contact" style="max-width:1120px;margin:0 auto;padding:72px 24px 84px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:44px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#A8531B">${esc(t.ctaKicker)}</div>
+          <div style="font-family:Poppins,sans-serif;font-size:clamp(25px,4cqw,42px);font-weight:600;letter-spacing:-1.2px;line-height:1.18;color:#08304A">${esc(t.ctaTitle)}</div>
+          <div style="font-size:16px;font-weight:300;line-height:1.75;color:rgba(8,48,74,.76);max-width:46ch">${esc(t.ctaBody)}</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;color:#08304A">0150 850 0099</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;color:rgba(8,48,74,.72)">@more_thanrealestate</div>
+            <div style="font-size:15px;font-weight:300;color:rgba(8,48,74,.72)">${esc(t.address)}</div>
+          </div>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid rgba(8,48,74,.14);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 30px rgba(8,48,74,.07)">
+          <div style="font-family:Poppins,sans-serif;font-size:17px;font-weight:600;color:#08304A">${esc(t.formTitle)}</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fName)}</div>
+            <input id="fldName" type="text" value="${esc(state.name)}" placeholder="${esc(t.pName)}" style="border:1px solid rgba(8,48,74,.18);border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:#08304A;background:#FBF7F1;outline:none;width:100%">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fRole)}</div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap">${rolePickerChips}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(8,48,74,.72)">${esc(t.fMsg)}</div>
+            <textarea id="fldMsg" rows="3" placeholder="${esc(a.placeholder)}" style="border:1px solid rgba(8,48,74,.18);border-radius:11px;padding:12px 14px;font-family:inherit;font-size:16px;color:#08304A;background:#FBF7F1;outline:none;width:100%;resize:vertical">${esc(state.msg)}</textarea>
+          </div>
+          <a id="waBtn" href="${buildWaLink()}" target="_blank" rel="noopener" style="background:#08304A;border-radius:12px;padding:15px;text-align:center;font-size:15px;font-weight:600;color:#FFFFFF;display:block">${esc(t.formCta)}</a>
+          <div style="font-size:12px;font-weight:300;line-height:1.6;color:rgba(8,48,74,.72);text-align:center">${esc(t.formNote)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:linear-gradient(168deg,#0B3D5C 0%,#08304A 52%,#052131 100%)">
+      <div class="lp-sec lp-pad-lg" style="position:relative;max-width:1120px;margin:0 auto;padding:52px 24px 46px 24px;display:flex;flex-direction:column;gap:30px">
+        <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:16px">
+            <img src="more-mark.png" alt="MORE" style="width:46px;height:42px;object-fit:contain">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="font-family:Poppins,sans-serif;font-size:24px;font-weight:700;letter-spacing:-.8px;color:#FFFFFF;line-height:1">MORE</div>
+              <div style="font-family:Poppins,sans-serif;font-size:11px;font-weight:500;letter-spacing:2.6px;text-transform:uppercase;color:#E89868;line-height:1">More than real estate</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:13.5px;font-weight:300;color:rgba(255,255,255,.72)">
+            <div>${esc(t.address)}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-weight:500;color:#FFFFFF">0150 850 0099</div>
+            <div style="display:flex;align-items:baseline;gap:9px">
+              <span style="font-size:11px;font-weight:500;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.5)">${esc(t.taxLabel)}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-weight:500;color:rgba(255,255,255,.85)">758-234-376</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,.16)"></div>
+        <div class="lp-foot-row" style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="font-size:11.5px;font-weight:500;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap">${esc(t.partner)}</div>
+            <img src="elfayez-gold.png" alt="El Fayez" style="height:38px;width:58px;object-fit:contain">
+          </div>
+          <div style="font-size:12.5px;font-weight:300;color:rgba(255,255,255,.6)">&copy; 2026 MORE &middot; more-realestate.com</div>
+        </div>
+      </div>
+    </div>
+
+    <a class="lp-fab" href="${WA_BASE}" target="_blank" rel="noopener" style="position:fixed;${fabSide}:22px;bottom:22px;z-index:60;background:#E89868;border-radius:999px;padding:14px 22px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 28px rgba(6,38,57,.34);font-size:14.5px;font-weight:600;color:#062639">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="#062639"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.5 14c-.3.8-1.5 1.4-2.2 1.5-.6.1-1.3.1-2.1-.1-.5-.2-1.1-.4-1.9-.7-3.3-1.4-5.5-4.8-5.7-5-.2-.2-1.4-1.8-1.4-3.5S5.1 5.8 5.4 5.5c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2 0 .4-.1.5l-.4.5c-.1.2-.3.3-.1.6.1.3.6 1.1 1.4 1.8 1 .9 1.8 1.1 2 1.3.3.1.4.1.6-.1l.8-.9c.2-.2.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.2 1.5z"></path></svg>
+      ${esc(t.fab)}
+    </a>
+  </div>`;
+}
+
+function wire(){
+  const app = document.getElementById("app");
+  app.querySelectorAll("[data-role-pick]").forEach(el => {
+    el.addEventListener("click", () => { state.role = el.getAttribute("data-role-pick"); mount(); });
+  });
+  app.querySelectorAll("[data-chip]").forEach(el => {
+    el.addEventListener("click", () => { state.role = el.getAttribute("data-chip"); mount(); });
+  });
+  const lang = app.querySelector("[data-lang-toggle]");
+  if (lang) lang.addEventListener("click", () => { state.lang = state.lang === "ar" ? "en" : "ar"; mount(); });
+  const nameEl = document.getElementById("fldName");
+  const msgEl = document.getElementById("fldMsg");
+  const waBtn = document.getElementById("waBtn");
+  if (nameEl) nameEl.addEventListener("input", () => { state.name = nameEl.value; if (waBtn) waBtn.href = buildWaLink(); });
+  if (msgEl) msgEl.addEventListener("input", () => { state.msg = msgEl.value; if (waBtn) waBtn.href = buildWaLink(); });
+}
+
+function mount(){
+  document.getElementById("app").innerHTML = render();
+  wire();
+}
+mount();
+</script>
+</body>
+</html>
