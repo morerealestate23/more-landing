@@ -213,6 +213,14 @@ function buildWaLink(){
   return WA_BASE + "?text=" + encodeURIComponent(lines.join("\n"));
 }
 
+// Lets someone switch roles from inside the dark "for you" section itself, without
+// scrolling back up to the picker cards — reuses the role-pick handler (data-role-pick)
+// so it also carries the same scroll-into-view behaviour, harmlessly, since it's already there.
+function roleChipDark(k, on){
+  const ar = state.lang === "ar";
+  const r = ROLES[k][ar ? "ar" : "en"];
+  return `<div class="lp-chip" data-role-pick="${k}" style="border:1px solid ${on?"#E89868":"rgba(255,255,255,.28)"};background:${on?"#E89868":"rgba(255,255,255,.07)"};color:${on?"#062639":"rgba(255,255,255,.82)"};border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer">${esc(r.name)}</div>`;
+}
 function roleChip(k, on, dense){
   const ar = state.lang === "ar";
   const r = ROLES[k][ar ? "ar" : "en"];
@@ -238,6 +246,7 @@ function render(){
 
   const rolePicker = Object.keys(ROLES).map(k => roleChip(k, k === state.role, false)).join("");
   const rolePickerChips = Object.keys(ROLES).map(k => roleChip(k, k === state.role, true)).join("");
+  const rolePickerChipsDark = Object.keys(ROLES).map(k => roleChipDark(k, k === state.role)).join("");
   const steps = a.steps.map((v, i) => `<div style="display:flex;flex-direction:column;gap:12px;border-top:2px solid rgba(232,152,104,.45);padding-top:18px">
       <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#E89868">0${i+1}</div>
       <div style="font-size:16px;font-weight:300;line-height:1.72;color:rgba(255,255,255,.86)">${esc(v)}</div>
@@ -339,6 +348,7 @@ function render(){
           <div style="font-size:12px;font-weight:600;letter-spacing:3.4px;text-transform:uppercase;color:#E89868">${esc(t.forYou)} &mdash; ${esc(a.name)}</div>
           <div style="font-family:Poppins,sans-serif;font-size:clamp(23px,3.8cqw,40px);font-weight:600;letter-spacing:-1px;line-height:1.24;color:#FFFFFF">${esc(a.head)}</div>
         </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:22px">${rolePickerChipsDark}</div>
         <div class="lp-steps" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:26px;margin-top:44px">${steps}</div>
         <div style="margin-top:44px;border-left:3px solid #E89868;padding-left:20px;max-width:64ch">
           <div style="font-size:15px;font-weight:300;line-height:1.8;color:rgba(255,255,255,.7)">${esc(a.foot)}</div>
